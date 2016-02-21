@@ -3,12 +3,12 @@ import urllib, urllib2
 
 # Add your BING_API_KEY
 
-BING_API_KEY = 'S9HYLd3UpwXgToCmLfFKB2+zV55v04s32mR/d+sUiLI'
+BING_API_KEY = 'sNjRCJAezGQdaneJAoCjZ5FYW+DI+rwca3muXoj8MN0'
 
 def run_query(search_terms):
     # Specify the base
-    root_url = 'https://api.datamarket.azure.com/Bing/Synonyms/v1/'
-    source = 'GetSynonyms'
+    root_url = 'https://api.datamarket.azure.com/Bing/Search/'
+    source = 'Web'
 
     # Specify how many results we wish to be returned per page.
     # Offset specifies where in the results list to start from.
@@ -57,7 +57,10 @@ def run_query(search_terms):
         # Loop through each page returned, populating out results list.
         for result in json_response['d']['results']:
             results.append({
-            'title': result['Synonym']})
+            'title': result['Title'],
+            'link': result['Url'],
+            'summary': result['Description']
+            })
 
     # Catch a URLError exception - something went wrong when connecting!
     except urllib2.URLError, e:
@@ -66,5 +69,23 @@ def run_query(search_terms):
     # Return the list of results to the calling function.
     return results
 
+def main():
+    # Query, get the results and create a variable to store rank.
+    query = raw_input("Please enter a query: ")
+    results = run_query(query)
+    rank = 1
+
+    # Loop through our results.
+    for result in results:
+        # Print details.
+        print "Rank {0}".format(rank)
+        print result['title']
+        print result['link']
+        print result['summary']
+        print
+
+        # Increment our rank counter by 1.
+        rank += 1
+
 if __name__ == '__main__':
-    print run_query('rango')
+    main()

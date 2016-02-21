@@ -19,7 +19,6 @@ from django.conf import settings
 from django.views.static import serve
 from registration.backends.simple.views import RegistrationView
 
-
 class MyRegistrationView(RegistrationView):
     def get_success_url(self, request, user):
         return '/rango/'
@@ -30,6 +29,11 @@ urlpatterns = [
     url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
     url(r'^accounts/', include('registration.backends.simple.urls')),
 ]
+
+if not settings.DEBUG:
+    urlpatterns += [
+        url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+    ]
 
 if settings.DEBUG:
     urlpatterns += [
